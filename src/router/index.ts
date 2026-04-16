@@ -11,6 +11,24 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
+      path: '/trip/create',
+      name: 'create-trip',
+      component: () => import('@/views/CreateTripView.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/trip/:id',
+      name: 'trip',
+      component: () => import('@/views/TripView.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/join',
+      name: 'join-trip',
+      component: () => import('@/views/JoinTripView.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
       path: '/login',
       name: 'login',
       component: () => import('@/views/LoginView.vue')

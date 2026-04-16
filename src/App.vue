@@ -5,9 +5,16 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { registerPushNotifications } from '@/lib/pushNotifications'
 
 const auth = useAuthStore()
-auth.init()
+auth.init().then(() => {
+  if (auth.isAuthenticated) registerPushNotifications()
+})
+
+auth.$subscribe(() => {
+  if (auth.isAuthenticated) registerPushNotifications()
+})
 </script>
 
 <style>
