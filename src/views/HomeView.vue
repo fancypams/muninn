@@ -1,14 +1,14 @@
 <template>
   <div class="home">
     <header class="home-header">
-      <h1>Muninn</h1>
-      <button class="sign-out" @click="handleSignOut">Sign Out</button>
+      <h1 class="wordmark">muninn</h1>
+      <button class="btn-outline-sm" @click="handleSignOut">Sign Out</button>
     </header>
 
     <div class="actions">
       <button class="action-card create" @click="router.push({ name: 'create-trip' })">
-        <span class="action-icon">+</span>
-        <span class="action-label">Create Itinerary</span>
+        <span class="action-icon create-icon">+</span>
+        <span class="action-label create-label">Create<br>Itinerary</span>
       </button>
       <button class="action-card join" @click="router.push({ name: 'join-trip' })">
         <span class="action-icon">→</span>
@@ -17,7 +17,7 @@
     </div>
 
     <section class="trips-section">
-      <h2>Your Trips</h2>
+      <h2 class="section-label">Your Trips</h2>
       <p v-if="loading" class="muted">Loading...</p>
       <p v-else-if="trips.myTrips.length === 0" class="muted">No trips yet.</p>
       <ul v-else class="trip-list">
@@ -27,8 +27,13 @@
           class="trip-card"
           @click="router.push({ name: 'trip', params: { id: trip.id } })"
         >
-          <span class="trip-name">{{ trip.name }}</span>
-          <span class="trip-code">{{ trip.trip_code }}</span>
+          <div class="trip-card-left">
+            <span class="trip-name">{{ trip.name }}</span>
+          </div>
+          <div class="trip-card-right">
+            <span class="trip-code-badge">{{ trip.trip_code }}</span>
+            <span class="trip-chevron">›</span>
+          </div>
         </li>
       </ul>
     </section>
@@ -59,37 +64,48 @@ async function handleSignOut() {
 
 <style scoped>
 .home {
+  min-height: 100svh;
+  background: var(--bg);
   padding: 1.5rem;
   padding-top: calc(env(safe-area-inset-top, 0px) + 1.5rem);
   padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 1.5rem);
-  min-height: 100svh;
 }
 
 .home-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.75rem;
 }
 
-.home-header h1 {
+.wordmark {
   font-size: 1.75rem;
   font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
 }
 
-.sign-out {
+.btn-outline-sm {
   background: none;
-  border: none;
-  color: #6b7280;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 0.4rem 1rem;
   font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text);
   cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.btn-outline-sm:hover {
+  border-color: var(--text-muted);
 }
 
 .actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  margin-bottom: 2.5rem;
+  gap: 0.875rem;
+  margin-bottom: 2.25rem;
 }
 
 .action-card {
@@ -97,50 +113,68 @@ async function handleSignOut() {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.625rem;
   padding: 1.5rem 1rem;
-  border: none;
-  border-radius: 16px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
   cursor: pointer;
   font-size: 1rem;
+  transition: border-color 0.15s;
+  min-height: 110px;
 }
 
-.action-card.create {
-  background: #2563eb;
-  color: white;
-}
-
-.action-card.join {
-  background: #f3f4f6;
-  color: #1a1a1a;
+.action-card:hover {
+  border-color: var(--text-muted);
 }
 
 .action-icon {
-  font-size: 1.75rem;
-  font-weight: 300;
+  font-size: 1.5rem;
+  font-weight: 400;
   line-height: 1;
+  color: var(--text);
+}
+
+.create-icon {
+  width: 36px;
+  height: 36px;
+  background: none;
+  border: 2px solid var(--gold);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 300;
+  color: var(--gold);
 }
 
 .action-label {
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
+  color: var(--text);
+  text-align: center;
+  line-height: 1.3;
 }
 
-.trips-section h2 {
-  font-size: 1.1rem;
+.create-label {
+  color: var(--gold);
+}
+
+.section-label {
+  font-size: 0.7rem;
   font-weight: 600;
-  margin-bottom: 1rem;
-  color: #6b7280;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-bottom: 0.875rem;
 }
 
 .trip-list {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.625rem;
 }
 
 .trip-card {
@@ -148,26 +182,53 @@ async function handleSignOut() {
   justify-content: space-between;
   align-items: center;
   padding: 1rem 1.25rem;
-  background: #f9fafb;
-  border-radius: 12px;
+  background: var(--surface);
+  border-radius: var(--radius-md);
   cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: border-color 0.15s;
+}
+
+.trip-card:hover {
+  border-color: var(--border);
+}
+
+.trip-card-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
 }
 
 .trip-name {
   font-weight: 600;
+  font-size: 1rem;
 }
 
-.trip-code {
+.trip-card-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.trip-code-badge {
   font-size: 0.75rem;
   font-family: monospace;
-  color: #6b7280;
-  background: #e5e7eb;
-  padding: 0.2rem 0.5rem;
-  border-radius: 4px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  background: var(--bg);
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-sm);
+}
+
+.trip-chevron {
+  font-size: 1.25rem;
+  color: var(--text-muted);
+  line-height: 1;
 }
 
 .muted {
-  color: #9ca3af;
+  color: var(--text-muted);
   font-size: 0.9rem;
 }
 </style>

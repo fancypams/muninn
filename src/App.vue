@@ -18,6 +18,21 @@ auth.$subscribe(() => {
 </script>
 
 <style>
+:root {
+  --bg: #F5F0E8;
+  --surface: #FFFFFF;
+  --dark: #1A1A1A;
+  --gold: #C9940A;
+  --green: #2A9B48;
+  --text: #1A1A1A;
+  --text-muted: #888888;
+  --border: #DDD6CA;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-pill: 100px;
+}
+
 *,
 *::before,
 *::after {
@@ -28,8 +43,8 @@ auth.$subscribe(() => {
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
-  background: #fff;
-  color: #1a1a1a;
+  background: var(--bg);
+  color: var(--text);
   -webkit-font-smoothing: antialiased;
 }
 </style>

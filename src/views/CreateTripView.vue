@@ -1,24 +1,25 @@
 <template>
   <div class="page">
     <header class="page-header">
-      <button class="back" @click="router.back()">‹ Back</button>
-      <h1>New Itinerary</h1>
-      <div style="width: 60px" />
+      <button class="back-btn" @click="router.back()">‹ Back</button>
+      <h1 class="page-title">New Itinerary</h1>
+      <div style="width: 72px" />
     </header>
 
     <div class="content">
       <div class="field">
-        <label>Trip Name</label>
+        <label class="field-label">Trip Name</label>
         <input v-model="tripName" type="text" placeholder="e.g. Barcelona Weekend" />
       </div>
 
       <div class="items-section">
         <div class="section-header">
-          <h2>Itinerary Items</h2>
+          <h2 class="section-label">Itinerary Items</h2>
           <button v-if="!showForm" class="add-btn" @click="showForm = true">+ Add</button>
         </div>
 
         <div v-if="showForm" class="item-form">
+          <p class="form-section-label">New Activity</p>
           <input v-model="draft.title" type="text" placeholder="Activity title" />
           <div class="time-row">
             <input v-model="draft.date" type="date" />
@@ -38,13 +39,15 @@
         <p v-if="items.length === 0 && !showForm" class="muted">No items yet.</p>
 
         <ul class="item-list">
-          <li v-for="(item, i) in items" :key="i" class="item-row">
-            <div class="item-info">
-              <span class="item-title">{{ item.title }}</span>
-              <span class="item-time">{{ formatItemTime(item) }}</span>
-              <span v-if="item.notes" class="item-notes">{{ item.notes }}</span>
+          <li v-for="(item, i) in items" :key="i" class="item-card">
+            <div class="item-main">
+              <div class="item-info">
+                <span class="item-title">{{ item.title }}</span>
+                <span class="item-time">{{ formatItemTime(item) }}</span>
+                <span v-if="item.notes" class="item-notes">{{ item.notes }}</span>
+              </div>
+              <button class="icon-btn delete" @click="items.splice(i, 1)">✕</button>
             </div>
-            <button class="delete-btn" @click="items.splice(i, 1)">✕</button>
           </li>
         </ul>
       </div>
@@ -75,7 +78,7 @@ const tripName = ref('')
 const submitting = ref(false)
 const errorMsg = ref('')
 const showForm = ref(false)
-const items = ref<(ItemDraft & { date: string; startTime: string; endTime: string })[]>([])
+const items = ref<{ title: string; notes: string; date: string; startTime: string; endTime: string }[]>([])
 
 const draft = reactive({ title: '', date: '', startTime: '', endTime: '', notes: '' })
 
@@ -135,6 +138,7 @@ async function handleCreate() {
 <style scoped>
 .page {
   min-height: 100svh;
+  background: var(--bg);
   display: flex;
   flex-direction: column;
 }
@@ -143,50 +147,63 @@ async function handleCreate() {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 1.5rem;
+  padding: 1rem 1.25rem;
   padding-top: calc(env(safe-area-inset-top, 0px) + 1rem);
-  border-bottom: 1px solid #f3f4f6;
 }
 
-.page-header h1 {
-  font-size: 1.1rem;
-  font-weight: 600;
-}
-
-.back {
+.back-btn {
   background: none;
-  border: none;
-  font-size: 1rem;
-  color: #2563eb;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 0.3rem 0.875rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text);
   cursor: pointer;
-  width: 60px;
-  text-align: left;
+}
+
+.page-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
 }
 
 .content {
-  padding: 1.5rem;
+  padding: 1.25rem;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
   flex: 1;
 }
 
-.field label {
+.field-label {
   display: block;
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 0.7rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #6b7280;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
   margin-bottom: 0.5rem;
 }
 
 .field input {
   width: 100%;
-  padding: 0.75rem 1rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
+  padding: 0.875rem 1rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
   font-size: 1rem;
+  background: var(--surface);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.field input::placeholder {
+  color: var(--text-muted);
+}
+
+.field input:focus {
+  border-color: var(--dark);
 }
 
 .items-section {
@@ -201,40 +218,64 @@ async function handleCreate() {
   align-items: center;
 }
 
-.section-header h2 {
-  font-size: 0.75rem;
-  font-weight: 600;
+.section-label {
+  font-size: 0.7rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #6b7280;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
 }
 
 .add-btn {
   background: none;
   border: none;
-  color: #2563eb;
+  color: var(--text);
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   cursor: pointer;
 }
 
 .item-form {
-  background: #f9fafb;
-  border-radius: 12px;
-  padding: 1rem;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  border: 1.5px solid var(--border);
+}
+
+.form-section-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
 }
 
 .item-form input,
 .item-form textarea {
   width: 100%;
-  padding: 0.6rem 0.75rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
+  padding: 0.7rem 0.875rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
   font-size: 0.9rem;
-  background: white;
+  background: var(--bg);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s;
+  font-family: inherit;
+}
+
+.item-form input::placeholder,
+.item-form textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.item-form input:focus,
+.item-form textarea:focus {
+  border-color: var(--dark);
+  background: var(--surface);
 }
 
 .time-row {
@@ -243,13 +284,11 @@ async function handleCreate() {
   align-items: center;
 }
 
-.time-row input {
-  flex: 1;
-}
+.time-row input { flex: 1; }
 
 .end-label {
   font-size: 0.75rem;
-  color: #6b7280;
+  color: var(--text-muted);
   white-space: nowrap;
   flex: 1;
 }
@@ -258,31 +297,31 @@ async function handleCreate() {
   display: flex;
   gap: 0.5rem;
   justify-content: flex-end;
+  padding-top: 0.25rem;
 }
 
 .cancel-btn {
-  padding: 0.5rem 1rem;
+  padding: 0.55rem 1.125rem;
   background: none;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
   cursor: pointer;
   font-size: 0.875rem;
+  color: var(--text);
 }
 
 .save-btn {
-  padding: 0.5rem 1rem;
-  background: #2563eb;
+  padding: 0.55rem 1.5rem;
+  background: var(--gold);
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: 700;
 }
 
-.save-btn:disabled {
-  opacity: 0.4;
-}
+.save-btn:disabled { opacity: 0.4; }
 
 .item-list {
   list-style: none;
@@ -291,61 +330,69 @@ async function handleCreate() {
   gap: 0.5rem;
 }
 
-.item-row {
+.item-card {
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--border);
+}
+
+.item-main {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  padding: 0.875rem 1rem;
   gap: 0.75rem;
-  background: #f9fafb;
-  border-radius: 10px;
-  padding: 0.75rem 1rem;
 }
 
 .item-info {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.15rem;
+  gap: 0.2rem;
 }
 
 .item-title {
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
 }
 
 .item-time {
   font-size: 0.8rem;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .item-notes {
   font-size: 0.8rem;
-  color: #9ca3af;
+  color: var(--text-muted);
+  opacity: 0.7;
 }
 
-.delete-btn {
+.icon-btn {
   background: none;
   border: none;
-  color: #9ca3af;
+  color: var(--text-muted);
   font-size: 1rem;
   cursor: pointer;
   padding: 0.25rem;
+  opacity: 0.6;
+  transition: opacity 0.15s;
 }
 
+.icon-btn.delete:hover { color: #dc2626; opacity: 1; }
+
 .create-btn {
-  padding: 1rem;
-  background: #2563eb;
+  padding: 0.9375rem;
+  background: var(--dark);
   color: white;
   border: none;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   margin-top: auto;
+  transition: opacity 0.15s;
 }
 
-.create-btn:disabled {
-  opacity: 0.4;
-}
+.create-btn:disabled { opacity: 0.4; }
 
 .error {
   color: #dc2626;
@@ -353,7 +400,7 @@ async function handleCreate() {
 }
 
 .muted {
-  color: #9ca3af;
+  color: var(--text-muted);
   font-size: 0.875rem;
 }
 </style>
